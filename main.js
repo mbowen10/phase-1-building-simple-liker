@@ -3,6 +3,39 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
+let heartsArray = [...document.getElementsByClassName('like-glyph')];
+let modal = document.getElementById('modal')
+let modalParagraph = document.getElementById('modal-message')
+
+let serverAndCatch = (event) => {
+  mimicServerCall()
+  .then(() => handleRes(event))
+  .catch(error => handleError(error))
+}
+
+let handleError = (errorMessage) => {
+  modal.classList.remove('hidden')
+  modalParagraph.innerText = errorMessage
+  setTimeout(() => {
+    modal.classList.add('hidden')
+    modalParagraph.innerText = ""
+  }, 3000)
+}
+
+let handleRes = (event) => {
+  if (event.target.textContent === EMPTY_HEART){
+    event.target.classList.add('activated-heart')
+    event.target.textContent = FULL_HEART
+  } else {
+    event.target.classList.remove('activated-heart')
+    event.target.textContent = EMPTY_HEART
+  }
+}
+
+heartsArray.map(heartNode => {
+  heartNode.addEventListener('click', serverAndCatch)
+})
+
 
 
 
@@ -12,6 +45,7 @@ const FULL_HEART = '♥'
 //------------------------------------------------------------------------------
 
 function mimicServerCall(url="http://mimicServer.example.com", config={}) {
+  console.log('clicked')
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
       let isRandomFailure = Math.random() < .2
